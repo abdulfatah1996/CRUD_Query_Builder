@@ -17,17 +17,7 @@ class CountryController extends Controller
     {
 
         $countries = DB::table('countries')->orderBy('name')->paginate(5);
-        return view("countries.index",compact('countries'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return view("countries.index", compact('countries'));
     }
 
     /**
@@ -47,8 +37,10 @@ class CountryController extends Controller
 
         $country = DB::table('countries')->insert([
             'name' => $request->name,
-            'code' => $request->name,
-            'capital' => $request->name,
+            'code' => $request->code,
+            'capital' => $request->capital,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
         return back()->with('success', "Country inserted");
     }
@@ -61,7 +53,7 @@ class CountryController extends Controller
      */
     public function show(Country $country)
     {
-        //
+        return view('countries.show', compact('country'));
     }
 
     /**
@@ -72,7 +64,7 @@ class CountryController extends Controller
      */
     public function edit(Country $country)
     {
-        //
+        return view('countries.edit', compact('country'));
     }
 
     /**
@@ -84,7 +76,21 @@ class CountryController extends Controller
      */
     public function update(Request $request, Country $country)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'code' => 'required',
+            'capital' => 'required',
+        ]);
+
+        $country = DB::table('countries')
+            ->where('id', $country->id)
+            ->update([
+                'name' => $request->name,
+                'code' => $request->code,
+                'capital' => $request->capital,
+                'updated_at' => now(),
+            ]);
+        return redirect('countries')->with('success', "Country updated");
     }
 
     /**
@@ -95,6 +101,10 @@ class CountryController extends Controller
      */
     public function destroy(Country $country)
     {
-        //
+        // return $country;
+        $country = DB::table('countries')
+            ->where('id',$country->id)
+            ->delete();
+        return redirect('countries')->with('success', "Country deleted");
     }
 }

@@ -7,6 +7,16 @@
 
 @section('content')
     <div class="col-12">
+        <div class="row col-8 mx-auto">
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>
+                        {{ session('success') }}
+                    </strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+        </div>
         <div class="row text-center">
             <h5 class="font-monospace text-muted display-5 fw-bold">View All countries</h5>
         </div>
@@ -37,13 +47,20 @@
                                     <td>{{ $country->capital }}</td>
                                     <td>
                                         <div class="d-flex justify-content-around align-items-center">
-                                            <a href="#" class="btn-sm btn btn-outline-info rounded-circle">
+                                            <a href="{{ route('countries.edit', ['country' => $country->id]) }}"
+                                                class="btn-sm btn btn-outline-info rounded-circle">
                                                 <i class='bx bx-edit'></i>
                                             </a>
-                                            <a href="#" class="btn-sm btn btn-outline-danger rounded-circle">
-                                                <i class='bx bx-trash-alt'></i>
-                                            </a>
-                                            <a href="#" class="btn-sm btn btn-outline-dark rounded-circle">
+                                            <form action="{{ route('countries.destroy', $country->id) }}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-sm btn btn-outline-danger rounded-circle">
+                                                    <i class='bx bx-trash-alt'></i>
+                                                </button>
+                                            </form>
+
+                                            <a href="{{ route('countries.show', ['country' => $country->id]) }}"
+                                                class="btn-sm btn btn-outline-dark rounded-circle">
                                                 <i class='bx bx-show'></i>
                                             </a>
                                         </div>
@@ -56,14 +73,6 @@
                 </div>
             </div>
             <div class="col-4">
-                @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <strong>
-                            {{ session('success') }}
-                        </strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
                 <h5 class="font-monospace text-muted fw-bold">Add New Countruy</h5>
                 <form action="{{ route('countries.store') }}" method="post">
                     @csrf
